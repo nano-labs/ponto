@@ -1,0 +1,16 @@
+*.pyc
+*.sql
+core/geral/custom_settings.py
+*.sublime-project
+*.sublime-workspace
+.idea/*
+*/.idea/*
+*.DS_Store
+*.pickle
+media/*
+static/*
+!core/*/static
+!core/*/media
+!media/.holder
+!static/.holder
+*.sqlite3

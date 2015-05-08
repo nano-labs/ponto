@@ -1,0 +1,168 @@
+{% extends "admin/base_site.html" %}
+{% load i18n grp_tags admin_urls admin_static admin_list %}
+
+<!-- LOADING -->
+{% load i18n l10n admin_urls admin_static %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{% static "grappelli/jquery/jquery-1.9.1.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/highcharts/highcharts.js" %}"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            var chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'container',
+                    type: 'line',
+                    inverted: true,
+                },
+                title: {
+                    text: 'Permanência na empresa'
+                },
+                subtitle: {
+                    style: {
+                        position: 'absolute',
+                        right: '0px',
+                        bottom: '10px'
+                    }
+                },
+                legend: {
+                    // layout: 'vertical',
+                    // align: 'top',
+                    verticalAlign: 'top',
+                    // x: -150,
+                    y: 20,
+                    floating: true,
+                    borderWidth: 1,
+                    backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+                },
+                tooltip: {
+                    headerFormat: '<b>{series.name}</b><br/>',
+                    pointFormat: '{Math.floor(point.y / 60)}' + '{point.y % 60}',
+                },
+                xAxis: {
+                    categories: [{% for entrada in entradas %}{% if entrada.util %}'{{entrada.dia}}'{% if not forloop.last %}, {% endif %}{% endif %}{% endfor %}]
+                },
+                yAxis: {
+                    title: {
+                        text: 'Horário'
+                    },
+                    labels: {
+                        formatter: function () {
+                            return Math.floor(this.value / 60) + ":" + this.value % 60;
+                        }
+                    },
+                    // type: "datetime",
+                    gridLineColor: 'transparent',
+                    floor: 360,
+                    // min: 0,
+                    plotLines: [{
+                        color: 'red',
+                        width: 1,
+                        value: 600,
+                        label: "10:00",
+                        dashStyle: "shortDot",
+                    },{
+                        color: 'red',
+                        width: 1,
+                        value: 1140,
+                        label: "19:00",
+                        dashStyle: "shortDot",
+                    }],
+                },
+                plotOptions: {
+                    area: {
+                        fillOpacity: 0.5
+                    }
+                },
+
+                series: [{
+                    name: 'Entrada',
+                    data: [{% for entrada in entradas %}{% if entrada.util %}{{entrada.minutos_hoje.entrada.minutos}}{% if not forloop.last %}, {% endif %}{% endif %}{% endfor %}],
+                    // tooltip: {
+                    //     pointFormat: "Value: {point.y} mm",
+                    // },
+                }, {
+                    name: 'Saída',
+                    // data: [{% for entrada in cl.result_list %}{{entrada.used}}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                    data: [{% for entrada in entradas %}{% if entrada.util %}{{entrada.minutos_hoje.saida.minutos}}{% if not forloop.last %}, {% endif %}{% endif %}{% endfor %}],
+                    // tooltip: {
+                    //     pointFormat: "Value: {point.y:,.0f} mm",
+                    // },
+                }]
+            });
+        });
+    </script>
+{% endblock %}
+
+<!-- BREADCRUMBS -->
+{% block breadcrumbs %}
+    <ul class="grp-horizontal-list">
+        <li><a href="{% url 'admin:index' %}">{% trans "Home" %}</a></li>
+        <li>Relatório</li>
+    </ul>
+{% endblock %}
+
+<!-- CONTENT -->
+{% block content %}
+    <div class="g-d-c">
+        <div style="width: 2000px;">
+        <table style="float: left">
+            <thead>
+                <tr><th></th><th>Dia</th><th>Entrada</th><th>Saída para almoço</th><th>Retorno do almoço</th><th>Saída</th><th>Total</th><th>Extra</th><th>Defícit</th><th>Comentário</th></tr>
+            </thead>
+            <tbody>
+                {% for e in entradas %}
+                    {% if e.inexistente %}
+                    <tr style="background: #FAFAFA; color: #CCCCCC !important">
+                        <td>{{e.dia|date:"D"}}</td>
+                        <td>{{e.dia}}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% elif e.abonado %}
+                    <tr style="background: #D6FFE0; color: #CCCCCC !important">
+                        <td>{{e.dia|date:"D"}}</td>
+                        <td>{{e.dia}}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{e.comentario_curto}}</td>
+                    </tr>
+                    {% else %}
+                    <tr {% if e.fim_de_semana %}style="background: #CACACA"{% elif e.folga %}style="background: #D6FFFF"{% endif %}>
+                        <td>{{e.dia|date:"D"}}</td>
+                        <td>{{e.dia}}</td>
+                        <td {% if not e.entrada and not e.fim_de_semana and not e.folga %}style="background: #FFCECE"{% endif %}>{{e.entrada|default_if_none:""}}</td>
+                        <td>{{e.saida_almoco|default_if_none:""}}</td>
+                        <td>{{e.volta_almoco|default_if_none:""}}</td>
+                        <td {% if not e.saida and not e.fim_de_semana and not e.folga %}style="background: #FFCECE"{% endif %}>{{e.saida|default_if_none:""}}</td>
+                        <td>{{e.total}}</td>
+                        <td>{{e.extra}}</td>
+                        <td>{{e.deficit}}</td>
+                        <td>{{e.comentario_curto}}</td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+<!--         </table>
+        <br/>
+        <table>
+ -->            <thead>
+                <tr><th></th><th></th><th></th><th></th><th></th><th>Total desejado</th><th>Total trabalhado</th><th>Extras total</th><th>Déficit total</th><th style="font-size: 1.1em">Saldo final</th></tr>
+            </thead>
+                <tr><td></td><td></td><td></td><td></td><td></td><td>{{total_alvo}}</td><td>{{total_trabalhado}}</td><td>{{total_extra}}</td><td>{{total_deficit}}</td><td style="font-size: 1.1em">{{saldo_string}}</td></tr>
+        </table>
+        <div id="container" style="float: left; width: 450px; height: {% widthratio entradas|length 1 37 %}px; background: #0000FF; margin-left: 10px;"></div>
+    </div>
+    </div>
+{% endblock %}

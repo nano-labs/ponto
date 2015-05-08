@@ -1,0 +1,8 @@
+*.pyc
+*.sublime-project
+*.sublime-workspace
+.idea/*
+.project
+*/.idea/*
+*.DS_Store
+*.pickle
