@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-
+u"""E isso é um model."""
 from datetime import datetime, date, timedelta
 
 from django.db import models
@@ -9,12 +9,19 @@ from utils.models import BaseModel
 
 TOTAL_DIA = timedelta(hours=8)
 
+
 class Entrada(BaseModel):
+
+    u"""Tá tudo aqui."""
+
     usuario = models.ForeignKey(User, verbose_name=u"Funcionario")
     dia = models.DateField(u'Dia', default=datetime.today(), unique=True)
-    entrada = models.DateTimeField(u'Entrada', blank=True, null=True, default=datetime.today())
-    saida_almoco = models.DateTimeField(u'Saída para almoço', blank=True, null=True)
-    volta_almoco = models.DateTimeField(u'Volta do almoço', blank=True, null=True)
+    entrada = models.DateTimeField(u'Entrada', blank=True, null=True,
+                                   default=datetime.today())
+    saida_almoco = models.DateTimeField(u'Saída para almoço', blank=True,
+                                        null=True)
+    volta_almoco = models.DateTimeField(u'Volta do almoço', blank=True,
+                                        null=True)
     saida = models.DateTimeField(u'Saída', blank=True, null=True)
     foto = models.ImageField(upload_to='fotos', null=True, blank=True,
                                        verbose_name=u"Foto do ticket")
@@ -29,19 +36,26 @@ class Entrada(BaseModel):
     total_alvo = TOTAL_DIA
 
     def __unicode__(self):
+        """Unicode."""
         return u'%s' % self.dia.strftime("%d/%m/%Y")
 
     @classmethod
     def format_time(cls, delta):
+        """Formata um timedelta object em string."""
         n = ''
         if delta.total_seconds() < 0:
             n = '-'
-        return "%s%02d:%02d" % (n, int(delta.total_seconds()/60/60), int((abs(delta.total_seconds()) - abs(int(delta.total_seconds()/60/60)*60*60))/60) )
+        return "%s%02d:%02d" % (n, int(delta.total_seconds()/60/60),
+                                int((abs(delta.total_seconds()) -
+                                    abs(int(delta.total_seconds()/60/60)*60*60))/60) )
 
     @property
     def total(self):
-        if all([self.entrada, self.saida_almoco, self.volta_almoco, self.saida]):
-            return (self.saida - self.entrada) - (self.volta_almoco - self.saida_almoco)
+        """Caucula o tempo total de trabalho deste dia."""
+        if all([self.entrada, self.saida_almoco, self.volta_almoco,
+                self.saida]):
+            return (self.saida - self.entrada) - (self.volta_almoco -
+                                                  self.saida_almoco)
         elif self.entrada and self.saida:
             return self.saida - self.entrada
         else:
@@ -49,6 +63,7 @@ class Entrada(BaseModel):
 
     @property
     def extra(self):
+        """Calcula o total de horas extras do dia."""
         if self.folga or self.abonado:
             return timedelta(minutes=0)
         if self.total:
@@ -58,6 +73,7 @@ class Entrada(BaseModel):
 
     @property
     def deficit(self):
+        """Calcula o tempo faltoso deste dia."""
         if self.folga or self.abonado:
             return timedelta(minutes=0)
         if self.total:
@@ -67,6 +83,7 @@ class Entrada(BaseModel):
 
     @property
     def comentario_curto(self):
+        """Precisa explciar?."""
         if self.comentario:
             return u''.join(self.comentario[:50])
         elif self.folga:
@@ -75,6 +92,7 @@ class Entrada(BaseModel):
 
     @property
     def minutos_hoje(self):
+        u"""Gambiarra. Acho que nem uso mais. Não tente entender."""
         def calcula_minutos(tempo):
             # print tempo
             t = 'null'
@@ -83,16 +101,18 @@ class Entrada(BaseModel):
             return t
 
         r =  {'entrada': {'label': self.entrada.strftime("%H:%M") if self.entrada else 'null',
-                            'minutos': calcula_minutos(self.entrada)},
-                'saida': {'label': self.saida.strftime("%H:%M") if self.saida else 'null',
-                            'minutos': calcula_minutos(self.saida)}}
+                          'minutos': calcula_minutos(self.entrada)},
+              'saida': {'label': self.saida.strftime("%H:%M") if self.saida else 'null',
+                        'minutos': calcula_minutos(self.saida)}}
         return r
 
     @property
     def util(self):
+        u"""Retorna se é um dia útil nou não."""
         return not any([self.folga, self.abonado, self.fim_de_semana])
 
     def has_foto(self):
+        """Ok..."""
         if self.foto:
             return True
         return False
@@ -103,5 +123,3 @@ class Entrada(BaseModel):
         ordering = ('-dia',)
         verbose_name = u'Entrada'
         verbose_name_plural = u'Entrada'
-
-

@@ -6,3 +6,9 @@ Para ajuda, dúvidas ou suporte mande um email para
 
 suporte@gofuckyourself.com
 sua@mae.vsf
+
+
+TODO:
+	Corrigir no gráfico no relatório que está msotrando "{Math.floor(point.y / 60)}' + '{point.y % 60}"
+	Revisar o cálculo de Total desejado e total trabalhado
+	Plotar no gráfico a entrada e saída medias e seus desvios padrões
