@@ -1,0 +1,91 @@
+{% load i18n grp_tags admin_urls admin_static admin_list %}
+
+<!-- LOADING -->
+{% load i18n l10n admin_urls admin_static %}
+<script type="text/javascript" src="{% static "grappelli/jquery/jquery-1.9.1.min.js" %}"></script>
+<script type="text/javascript" src="{% static "js/highcharts/highcharts.js" %}"></script>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function () {
+        var chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'container',
+                type: 'line',
+                inverted: true,
+            },
+            title: {
+                text: 'Permanência na empresa'
+            },
+            subtitle: {
+                style: {
+                    position: 'absolute',
+                    right: '0px',
+                    bottom: '10px'
+                }
+            },
+            legend: {
+                // layout: 'vertical',
+                // align: 'top',
+                verticalAlign: 'top',
+                // x: -150,
+                y: 20,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+            },
+            tooltip: {
+                headerFormat: '<b>{series.name}</b><br/>',
+                pointFormat: '{Math.floor(point.y / 60)}' + '{point.y % 60}',
+            },
+            xAxis: {
+                categories: [{% for entrada in entradas %}{% if entrada.util %}'{{entrada.dia}}'{% if not forloop.last %}, {% endif %}{% endif %}{% endfor %}]
+            },
+            yAxis: {
+                title: {
+                    text: 'Horário'
+                },
+                labels: {
+                    formatter: function () {
+                        return Math.floor(this.value / 60) + ":" + this.value % 60;
+                    }
+                },
+                // type: "datetime",
+                gridLineColor: 'transparent',
+                floor: 360,
+                // min: 0,
+                plotLines: [{
+                    color: 'red',
+                    width: 1,
+                    value: 600,
+                    label: "10:00",
+                    dashStyle: "shortDot",
+                },{
+                    color: 'red',
+                    width: 1,
+                    value: 1140,
+                    label: "19:00",
+                    dashStyle: "shortDot",
+                }],
+            },
+            plotOptions: {
+                area: {
+                    fillOpacity: 0.5
+                }
+            },
+
+            series: [{
+                name: 'Entrada',
+                data: [{% for entrada in entradas %}{% if entrada.util %}{{entrada.minutos_hoje.entrada.minutos}}{% if not forloop.last %}, {% endif %}{% endif %}{% endfor %}],
+                // tooltip: {
+                //     pointFormat: "Value: {point.y} mm",
+                // },
+            }, {
+                name: 'Saída',
+                // data: [{% for entrada in cl.result_list %}{{entrada.used}}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                data: [{% for entrada in entradas %}{% if entrada.util %}{{entrada.minutos_hoje.saida.minutos}}{% if not forloop.last %}, {% endif %}{% endif %}{% endfor %}],
+                // tooltip: {
+                //     pointFormat: "Value: {point.y:,.0f} mm",
+                // },
+            }]
+        });
+    });
+</script>

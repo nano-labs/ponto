@@ -15,7 +15,7 @@ class Entrada(BaseModel):
     u"""Tá tudo aqui."""
 
     usuario = models.ForeignKey(User, verbose_name=u"Funcionario")
-    dia = models.DateField(u'Dia', default=datetime.today(), unique=True)
+    dia = models.DateField(u'Dia', default=datetime.today())
     entrada = models.DateTimeField(u'Entrada', blank=True, null=True,
                                    default=datetime.today())
     saida_almoco = models.DateTimeField(u'Saída para almoço', blank=True,
@@ -60,6 +60,27 @@ class Entrada(BaseModel):
             return self.saida - self.entrada
         else:
             return u""
+
+    @property
+    def ate_agora(self):
+        u"""Retorna a string de tempo trabalhando ate agora."""
+        if all([self.entrada, self.saida_almoco, self.volta_almoco,
+                self.saida]):
+            tempo = (self.saida - self.entrada) - (self.volta_almoco -
+                                                   self.saida_almoco)
+        elif all([self.entrada, self.saida_almoco, self.volta_almoco]):
+            tempo = datetime.now() - self.entrada
+            almoco = self.volta_almoco - self.saida_almoco
+            tempo = tempo - almoco
+        elif all([self.entrada, self.saida_almoco]):
+            tempo = self.saida_almoco - self.entrada
+        elif self.entrada:
+            tempo = datetime.now() - self.entrada
+        else:
+            return "Nada!"
+        horas = int(tempo.total_seconds() / 60 / 60)
+        minutos = int((tempo.total_seconds() / 60) - (horas * 60))
+        return "%s horas e %s minutos" % (horas, minutos)
 
     @property
     def extra(self):
@@ -120,6 +141,13 @@ class Entrada(BaseModel):
     has_foto.short_description = "Imagem"
 
     class Meta:
+        unique_together = (('usuario', 'dia'), )
         ordering = ('-dia',)
         verbose_name = u'Entrada'
         verbose_name_plural = u'Entrada'
+
+
+class EntradaTodos(Entrada):
+
+    class Meta:
+        proxy = True

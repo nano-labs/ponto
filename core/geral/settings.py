@@ -101,7 +101,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'pt_BR'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
@@ -109,9 +109,9 @@ USE_L10N = True
 
 USE_TZ = False
 
-DATE_FORMAT = "d/m/Y"
+# DATE_FORMAT = "d/m/Y"
 
-DATETIME_FORMAT = "H:i d/m"
+# DATETIME_FORMAT = "H:i d/m"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
@@ -132,7 +132,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
     "geral.context_processors.context",
 )
-
+GRAPPELLI_ADMIN_TITLE = u"Sistema de pronto From Hell du Mal"
 # EMAIL_FROM = 'Bolao SporTV <bolaosportv@globo.com>'
 # EMAIL_HOST = '10.2.207.6'
 # EMAIL_PORT = 25

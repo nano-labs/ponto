@@ -7,10 +7,14 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    # url(r'^$', 'geral.views.home', name='home'),
+    url(r'^$', 'ponto.views.home', name='home'),
+    url(r'^relatorio/(?P<id_inicio>[0-9]+)/(?P<id_fim>[0-9]+)$',
+    	'ponto.views.relatorio', name='relatorio'),
+    url(r'^registrar/(?P<momento>\w+)$',
+        'ponto.views.registrar', name='registrar'),
     # url(r'^blog/', include('blog.urls')),
 
-    url(r'^', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
     url(r'^grappelli/', include('grappelli.urls')),
 )
 
