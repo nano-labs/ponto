@@ -1,4 +1,4 @@
-#!/www/virtualenvs/stormsec_com_br/lib/python2.7/site-packages python2.7
+#!/www/envs/ponto/lib/python2.7/site-packages python2.7
 import os
 import sys
 import site
@@ -7,7 +7,7 @@ WSGI_BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 # INFRA: A string 'core' deve ser substituida pela pasta onde se encontra o arquivo manage.py
 PROJECT_ROOT_DIR = os.path.join(WSGI_BASE_DIR, 'core')
-SITE_PACKAGES = "/www/virtualenvs/stormsec_com_br/lib/python2.7/site-packages"
+SITE_PACKAGES = "/www/envs/ponto/lib/python2.7/site-packages"
 
 site.addsitedir(os.path.abspath(SITE_PACKAGES))
 sys.path.insert(0, os.path.abspath(PROJECT_ROOT_DIR))

@@ -53,7 +53,7 @@ def registrar(request, momento):
     messages.add_message(request, messages.INFO, 'Ponto registrado em %s' % agora)
     return redirect('home')
 
-def cria_relatorio(id_inicio, id_fim):
+def cria_relatorio(id_inicio, id_fim, usuario):
     u"""Action que gera o relatório."""
     def calcula_media(l):
         l = [i for i in l if i is not 'null']
@@ -81,12 +81,12 @@ def cria_relatorio(id_inicio, id_fim):
     for i in range(total_dias + 1):
         dia = inicio.dia + timedelta(days=i)
         if dia.isoweekday() in [6, 7]:  # FIM DE SEMANA
-            entrada = Entrada(dia=dia, entrada=None)
+            entrada = Entrada(dia=dia, entrada=None, usuario=usuario)
             entrada.fim_de_semana = True
         else:
-            entrada = Entrada.objects.get_or_none(dia=dia)
+            entrada = Entrada.objects.get_or_none(dia=dia, usuario=usuario)
             if not entrada:
-                entrada = Entrada(dia=dia, entrada=None)
+                entrada = Entrada(dia=dia, entrada=None, usuario=usuario)
                 entrada.inexistente = True
         total_extra = entrada.extra + total_extra if entrada.extra else total_extra
         total_deficit = entrada.deficit + total_deficit if entrada.deficit else total_deficit
@@ -112,5 +112,5 @@ def cria_relatorio(id_inicio, id_fim):
 
 def relatorio(request, id_inicio, id_fim):
     u"""Action que gera o relatório."""
-    context = cria_relatorio(id_inicio, id_fim)
+    context = cria_relatorio(id_inicio, id_fim, request.user)
     return render(request, "relatorio.html", context)
