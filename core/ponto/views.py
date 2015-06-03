@@ -24,7 +24,6 @@ def home(request):
         usuario = request.user
         id_inicio = Entrada.objects.filter(usuario=usuario, dia__gte=trinta_dias).last().id
         id_fim = Entrada.objects.filter(usuario=usuario).first().id
-        print id_inicio, id_fim
         rel = cria_relatorio(id_inicio, id_fim, usuario)
         context.update(rel)
     return render(request, "home.html", context)
@@ -59,7 +58,7 @@ def cria_relatorio(id_inicio, id_fim, usuario):
         l = [i for i in l if i is not 'null']
         minutos = 0
         dp = 0
-        if len(l):
+        if len(l) >= 2:
             minutos = sum(l) / float(len(l))
             dp = sqrt((sum([i ** 2 for i in l]) - ((sum(l) ** 2) / len(l))) / (len(l) - 1))
         minutos = int(minutos)
