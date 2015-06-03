@@ -25,7 +25,7 @@ def home(request):
         id_inicio = Entrada.objects.filter(usuario=usuario, dia__gte=trinta_dias).last().id
         id_fim = Entrada.objects.filter(usuario=usuario).first().id
         print id_inicio, id_fim
-        rel = cria_relatorio(id_inicio, id_fim)
+        rel = cria_relatorio(id_inicio, id_fim, usuario)
         context.update(rel)
     return render(request, "home.html", context)
 
