@@ -6,33 +6,36 @@
     <link href="{% static "grappelli/stylesheets/screen.css" %}" rel="stylesheet" type="text/css" media="screen">
     <style>
     a.grp-button-custom {
-        height: 63px;
-        width: 340px;
+        height: 55px;
+        width: 290px;
         margin: 5px;
-        font-size: 22px;
-        line-height: 25px;
+        font-size: 18px;
+        line-height: 20px;
     }
     a.menor {
         height: 30px;
-        width: 120px;
-        margin: 25px;
-        bottom: -40px;
+        width: 100px;
+        margin: 15px;
+        bottom: 5px;
     }
     div.bloco {
-        width: 355px;
-        height: 640px;
+        width: 300px;
+        height: 457px;
         padding: 10px;
         /*border: 1px dashed #FF0000;*/
         text-align: center;
     }
     body {
         background: url('/static/images/ios_fundo.jpg');
-        background-size: 375px;
+        background-size: 320px;
         background-repeat: no-repeat;
     }
     table {
-        width: 340px;
+        width: 290px;
         margin: 5px;
+    }
+    thead {
+        font-size: 10px;
     }
     </style>
 </head>
@@ -61,7 +64,7 @@
             <table>
                 <thead>
                     <tr><th colspan="4">Resumo dos último 30 dias</th></tr>
-                    <tr><th>Total trabalhado</th><th>Extras total</th><th>Déficit total</th><th style="font-size: 1.1em">Saldo final</th></tr>
+                    <tr><th>Trabalhado</th><th>Extras</th><th>Déficit</th><th style="font-size: 1.1em">Saldo final</th></tr>
                 </thead>
                 <tbody>
                     <tr><td>{{total_trabalhado}}</td><td>{{total_extra}}</td><td>{{total_deficit}}</td><td style="font-size: 1.1em">{{saldo_string}}</td></tr>
