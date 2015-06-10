@@ -1,0 +1,88 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ponto From Hell</title>
+    <link href="{% static "grappelli/stylesheets/screen.css" %}" rel="stylesheet" type="text/css" media="screen">
+    <style>
+    input[type=text] {
+        height: 63px;
+        width: 340px;
+        margin: 5px;
+        font-size: 22px;
+        line-height: 25px;
+    }
+    input[type=password] {
+        height: 63px;
+        width: 340px;
+        margin: 5px;
+        font-size: 22px;
+        line-height: 25px;
+    }
+    button.button {
+        height: 63px;
+        width: 340px;
+        margin: 5px;
+        font-size: 22px;
+        line-height: 25px;
+    }
+    a.menor {
+        height: 30px;
+        width: 120px;
+        margin: 25px;
+        bottom: -60px;
+    }
+    div.bloco {
+        width: 355px;
+        height: 640px;
+        padding: 10px;
+        padding-top: 160px;
+        /*border: 1px dashed #FF0000;*/
+        text-align: center;
+    }
+    span.error {
+        color: #FF0000;
+        font-weight: bolder;
+        font-size: 20px;
+    }
+    body {
+        background: url('/static/images/ios_fundo.jpg');
+        background-size: 375px;
+        background-repeat: no-repeat;
+    }
+    h1.titulo {
+        font-weight: bolder;
+        font-size: 35px;
+    }
+    table {
+        width: 340px;
+        margin: 5px;
+    }
+    </style></head>
+<body>
+    <div id="login" class="bloco">
+        <h1 class="titulo">Ponto from Hell</h1>
+        <form name="LoginForm" action="/ios_login/" method="post">
+        {% csrf_token %}
+        {% if falha_autenticacao %}
+        <span class="error">Falha de autenticação</span>
+        {% endif %}
+        <div>
+            <div>
+                <input type="text" id="username" name="username"  placeholder="Username">
+            </div>
+        </div>
+        <div >
+            <div>
+                <input type="password" name="password" id="password" placeholder="Password">
+            </div>
+        </div>
+        <div>
+            <div>
+                <button type="submit" class="grp-button button">Login</button>
+            </div>
+        </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ponto From Hell</title>
+    <link href="{% static "grappelli/stylesheets/screen.css" %}" rel="stylesheet" type="text/css" media="screen">
+    <style>
+    a.grp-button-custom {
+        height: 63px;
+        width: 340px;
+        margin: 5px;
+        font-size: 22px;
+        line-height: 25px;
+    }
+    a.menor {
+        height: 30px;
+        width: 120px;
+        margin: 25px;
+        bottom: -60px;
+    }
+    div.bloco {
+        width: 355px;
+        height: 640px;
+        padding: 10px;
+        /*border: 1px dashed #FF0000;*/
+        text-align: center;
+    }
+    body {
+        background: url('/static/images/ios_fundo.jpg');
+        background-size: 375px;
+        background-repeat: no-repeat;
+    }
+    table {
+        width: 340px;
+        margin: 5px;
+    }
+    </style>
+</head>
+<body>
+    <div class="bloco">
+        <div>
+            <h1>{{agora|date:"H:i - l"}}<br/>
+                {{agora|date:"d \d\e F \d\e Y"}}</h1>
+            <h2>Bom dia, {{usuario.first_name}}</h2>
+        </div>
+        <br>
+        <div>
+            <a href="{% url 'registrar' 'entrada' %}?device=ios" class="grp-button grp-button-custom {% if not entrada.entrada %}grp-delete-link{% endif %}">{% if entrada.entrada %}Entrada registrada<br/>{{entrada.entrada|date:"H:i"}}{% else %}Registrar entrada<br/>{{agora|date:"H:i"}}{% endif %}</a>
+            <br/>
+            <a href="{% url 'registrar' 'saida_almoco' %}?device=ios" class="grp-button grp-button-custom {% if not entrada.saida_almoco %}grp-delete-link{% endif %}">{% if entrada.saida_almoco%}Saída para almoço registrada<br/>{{entrada.saida_almoco|date:"H:i"}}{% else %}Registrar saída para almoço<br/>{{agora|date:"H:i"}}{% endif %}</a>
+            <br/>
+            <a href="{% url 'registrar' 'volta_almoco' %}?device=ios" class="grp-button grp-button-custom {% if not entrada.volta_almoco %}grp-delete-link{% endif %}">{% if entrada.volta_almoco%}Volta do almoço registrada<br/>{{entrada.volta_almoco|date:"H:i"}}{% else %}Registrar volta do almoço<br/>{{agora|date:"H:i"}}{% endif %}</a>
+            <br/>
+            <a href="{% url 'registrar' 'saida' %}?device=ios" class="grp-button grp-button-custom {% if not entrada.saida %}grp-delete-link{% endif %}">{% if entrada.saida%}Saída registrada<br/>{{entrada.saida|date:"H:i"}}{% else %}Registrar saída<br/>{{agora|date:"H:i"}}{% endif %}</a>
+        </div>
+        <div>
+            {% if entrada %}<br/><h3>Hoje você já trabalhou: {{entrada.ate_agora}}</h3>{% endif %}
+        </div>
+        <br>
+        <div>
+            <table>
+                <thead>
+                    <tr><th>Total trabalhado</th><th>Extras total</th><th>Déficit total</th><th style="font-size: 1.1em">Saldo final</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>{{total_trabalhado}}</td><td>{{total_extra}}</td><td>{{total_deficit}}</td><td style="font-size: 1.1em">{{saldo_string}}</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <a href="" class="grp-button menor">Atualizar</a>
+        <a href="{% url 'ios_logout' %}" class="grp-button menor grp-delete-link">Sair</a>
+    </div>
+</body>
+</html>

@@ -12,6 +12,13 @@ urlpatterns = patterns('',
     	'ponto.views.relatorio', name='relatorio'),
     url(r'^registrar/(?P<momento>\w+)$',
         'ponto.views.registrar', name='registrar'),
+    url(r'^ios_login/$',
+        'ponto.views.ios_login', name='ios_login'),
+    url(r'^ios_logout/$',
+        'ponto.views.ios_logout', name='ios_logout'),
+    url(r'^ios_home/$',
+        'ponto.views.ios_home', name='ios_home'),
+
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),

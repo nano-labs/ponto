@@ -4,7 +4,9 @@ u"""Views."""
 from datetime import datetime, timedelta
 from math import sqrt
 
-from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect, render_to_response
+from django.template import RequestContext
 from django.http import Http404
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -21,14 +23,13 @@ def home(request):
                "usuario": usuario}
     if Entrada.objects.filter(usuario=usuario).count() >= 2:
         trinta_dias = datetime.today() - timedelta(31)
-        usuario = request.user
         id_inicio = Entrada.objects.filter(usuario=usuario, dia__gte=trinta_dias).last().id
         id_fim = Entrada.objects.filter(usuario=usuario).first().id
         rel = cria_relatorio(id_inicio, id_fim, usuario)
         context.update(rel)
     return render(request, "home.html", context)
 
-
+@staff_member_required
 def registrar(request, momento):
     usuario = request.user
     entrada = Entrada.objects.get_or_none(usuario=usuario, dia=datetime.today())
@@ -50,6 +51,8 @@ def registrar(request, momento):
         raise Http404
     entrada.save()
     messages.add_message(request, messages.INFO, 'Ponto registrado em %s' % agora)
+    if request.GET.get('device') == 'ios':
+        return redirect('ios_home')
     return redirect('home')
 
 def cria_relatorio(id_inicio, id_fim, usuario):
@@ -113,3 +116,41 @@ def relatorio(request, id_inicio, id_fim):
     u"""Action que gera o relatório."""
     context = cria_relatorio(id_inicio, id_fim, request.user)
     return render(request, "relatorio.html", context)
+
+def ios_login(request):
+    context = RequestContext(request)
+    logout(request)
+    if request.POST:
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return redirect('ios_home')
+        context["falha_autenticacao"] = True
+    return render_to_response('ios_login.html', context_instance=context)
+
+def ios_logout(request):
+    logout(request)
+    return redirect('ios_login')
+
+@staff_member_required
+def ios_home(request):
+    usuario = request.user
+    agora = datetime.now()
+    entrada = Entrada.objects.get_or_none(usuario=usuario, dia=datetime.today())
+    context = {"entrada": entrada,
+               "agora": agora,
+               "usuario": usuario}
+    if Entrada.objects.filter(usuario=usuario).count() >= 2:
+        trinta_dias = datetime.today() - timedelta(31)
+        id_inicio = Entrada.objects.filter(usuario=usuario, dia__gte=trinta_dias).last().id
+        id_fim = Entrada.objects.filter(usuario=usuario).first().id
+        rel = cria_relatorio(id_inicio, id_fim, usuario)
+        context.update(rel)
+    return render(request, "ios_home.html", context)
+
+
+
