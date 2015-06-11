@@ -118,6 +118,9 @@ def relatorio(request, id_inicio, id_fim):
     return render(request, "relatorio.html", context)
 
 def ios_login(request):
+    if request.user.is_authenticated():
+        return redirect('ios_home')
+
     context = RequestContext(request)
     logout(request)
     if request.POST:
