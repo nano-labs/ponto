@@ -155,14 +155,14 @@ def ios_home(request):
         context.update(rel)
     return render(request, "ios_home.html", context)
 
-# @staff_member_required
+@staff_member_required
 def ios_relatorio(request):
     usuario = request.user
     inicio = datetime.today() - timedelta(days=30)
-    entradas = Entrada.objects.filter(usuario=usuario, dia__gte=inicio).order_by('dia')
+    entradas = Entrada.objects.filter(usuario=usuario, dia__gte=inicio, folga=False, abonado=False).order_by('dia')
 
     saldo = 0
-    for e in Entrada.objects.filter(dia__lt=inicio).order_by('dia'):
+    for e in Entrada.objects.filter(usuario=usuario, dia__lt=inicio, folga=False, abonado=False).order_by('dia'):
         saldo += (e.total_horas - 8.0)
     saldo_graf = []
     for e in entradas:
