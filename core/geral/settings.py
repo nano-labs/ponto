@@ -121,7 +121,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-
+GRAPPELLI_SWITCH_USER = True
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
     "django.core.context_processors.debug",
@@ -131,6 +131,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.tz",
     "django.contrib.messages.context_processors.messages",
     "geral.context_processors.context",
+    "django.core.context_processors.request",
 )
 GRAPPELLI_ADMIN_TITLE = u"Sistema de pronto From Hell du Mal"
 # EMAIL_FROM = 'Bolao SporTV <bolaosportv@globo.com>'
