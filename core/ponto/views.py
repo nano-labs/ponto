@@ -160,7 +160,8 @@ def ios_relatorio(request):
     usuario = request.user
     inicio = datetime.today() - timedelta(days=30)
     entradas = Entrada.objects.filter(usuario=usuario, dia__gte=inicio, folga=False, abonado=False).order_by('dia')
-
+    minimo = min([i.total_horas for i in entradas]) - 1
+    minimo = minimo if minimo >= 0 else 0
     saldo = 0
     for e in Entrada.objects.filter(usuario=usuario, dia__lt=inicio, folga=False, abonado=False).order_by('dia'):
         saldo += (e.total_horas - 8.0)
@@ -170,6 +171,6 @@ def ios_relatorio(request):
         saldo_graf.append({"dia": e.dia, "saldo": saldo})
 
 
-    context = {"entradas": entradas, "saldos": saldo_graf}
+    context = {"entradas": entradas, "saldos": saldo_graf, "minimo": minimo}
     return render(request, "ios_relatorio.html", context)
 
