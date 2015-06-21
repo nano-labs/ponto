@@ -18,7 +18,8 @@ urlpatterns = patterns('',
         'ponto.views.ios_logout', name='ios_logout'),
     url(r'^ios_home/$',
         'ponto.views.ios_home', name='ios_home'),
-
+    url(r'^ios_relatorio/$',
+        'ponto.views.ios_relatorio', name='ios_relatorio'),
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),

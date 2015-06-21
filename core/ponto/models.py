@@ -62,6 +62,15 @@ class Entrada(BaseModel):
             return u""
 
     @property
+    def total_horas(self):
+        """Caucula o tempo total em minutos de trabalho deste dia."""
+        t = self.total
+        if t == "":
+            return 0
+        return t.total_seconds() / 60.0 / 60.0
+
+
+    @property
     def ate_agora(self):
         u"""Retorna a string de tempo trabalhando ate agora."""
         if all([self.entrada, self.saida_almoco, self.volta_almoco,

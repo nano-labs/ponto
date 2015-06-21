@@ -14,8 +14,8 @@
     }
     a.menor {
         height: 30px;
-        width: 100px;
-        margin: 15px;
+        width: 80px;
+        margin: 15px 6px 15px 6px;
         bottom: 5px;
     }
     div.bloco {
@@ -75,7 +75,8 @@
             </table>
         </div>
         <a href="" class="grp-button menor">Atualizar</a>
-        <a href="{% url 'ios_logout' %}" class="grp-button menor grp-delete-link">Sair</a>
+        <a href="/ios_relatorio" class="grp-button menor">Mais</a>
+        <a href="{% url 'ios_logout' %}" class="grp-button menor grp-delete-link">X</a>
     </div>
 </body>
 </html>

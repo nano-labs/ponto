@@ -1,0 +1,225 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ponto From Hell</title>
+    <link href="{% static "grappelli/stylesheets/screen.css" %}" rel="stylesheet" type="text/css" media="screen">
+    <style>
+    a.grp-button-custom {
+        height: 55px;
+        width: 290px;
+        margin: 5px;
+        font-size: 18px;
+        line-height: 20px;
+    }
+    a.menor {
+        height: 30px;
+        width: 100px;
+        margin: 15px;
+        bottom: 5px;
+    }
+    div.bloco {
+        width: 300px;
+        height: 457px;
+        padding: 10px;
+        /*border: 1px dashed #FF0000;*/
+        text-align: center;
+    }
+    body {
+        background: url('/static/images/ios_fundo.jpg');
+        background-size: 320px;
+        background-repeat: no-repeat;
+    }
+    table {
+        width: 290px;
+        margin: 5px;
+    }
+    thead {
+        font-size: 10px;
+    }
+    table td {
+        line-height: 5px !important;
+    }
+    div#trabalhadas {
+        padding-top: 0px;
+        width: 100%;
+        height: 200px;
+    }
+    div#saldo {
+        padding-top: 20px;
+        padding-bottom: 20px;
+        width: 100%;
+        height: 200px;
+    }
+    text[zIndex=8] {
+        visibility: hidden;
+    }
+    </style>
+    <script type="text/javascript" src="{% static "grappelli/jquery/jquery-1.9.1.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/highcharts/highcharts.js" %}"></script>
+    <script>
+    $(function () {
+        $(document).ready(function () {
+            var chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'trabalhadas',
+                    type: 'area',
+                },
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    text: 'Horas trabalhadas'
+                },
+                xAxis: {
+                    allowDecimals: false,
+                    labels: {
+                        formatter: function () {
+                            if (parseInt(this.value) % 2 == 0) {
+                                return null
+                            } else {
+                                return this.value; // clean, unformatted number for year
+                            }
+                        },
+                        style: {
+                            fontSize:'8px'
+                        },
+                    },
+                    categories: [{% for e in entradas %}'{{e.dia|date:"d"}}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                },
+                yAxis: {
+                    title: {
+                        text: null
+                    },
+                    labels: {
+                        formatter: function () {
+                            return this.value;
+                        }
+                    },
+                    tickInterval: 2,
+                    plotLines: [{
+                        color: 'red',
+                        width: 3,
+                        value: 8.0,
+                        label: "08:00",
+                        // dashStyle: "shortDot",
+                    }],
+                },
+                tooltip: {
+                    pointFormat: '{series.name} produced <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    area: {
+                        // pointStart: 1940,
+                        marker: {
+                            enabled: false,
+                            symbol: 'circle',
+                            radius: 2,
+                            states: {
+                                hover: {
+                                    enabled: true
+                                }
+                            }
+                        }
+                    }
+                },
+                series: [{
+                    name: null,
+                    data: [{% for e in entradas %}{{e.total_horas}}{% if not forloop.last %},{% endif %}{% endfor %}]
+                }]
+            });
+            var chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'saldo',
+                    type: 'area'
+                },
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    text: 'Saldo'
+                },
+                xAxis: {
+                    allowDecimals: false,
+                    labels: {
+                        formatter: function () {
+                            if (parseInt(this.value) % 2 == 0) {
+                                return null
+                            } else {
+                                return this.value; // clean, unformatted number for year
+                            }
+                        },
+                        style: {
+                            fontSize:'8px'
+                        }
+                    },
+                    categories: [{% for e in saldos %}'{{e.dia|date:"d"}}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                },
+                yAxis: {
+                    title: {
+                        text: null
+                    },
+                    labels: {
+                        formatter: function () {
+                            return this.value;
+                        },
+                        // style: {
+                        //     fontSize:'8px'
+                        // },
+                    },
+                    tickInterval: 2,
+                    plotLines: [{
+                        color: 'red',
+                        width: 3,
+                        value: 0.0,
+                        label: "00:00",
+                        // dashStyle: "shortDot",
+                    }],
+                },
+                tooltip: {
+                    pointFormat: '{series.name} produced <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    area: {
+                        // pointStart: 1940,
+                        marker: {
+                            enabled: false,
+                            symbol: 'circle',
+                            radius: 2,
+                            states: {
+                                hover: {
+                                    enabled: true
+                                }
+                            }
+                        }
+                    }
+                },
+                series: [{
+                    name: null,
+                    data: [{% for e in saldos %}{{e.saldo}}{% if not forloop.last %},{% endif %}{% endfor %}]
+                }]
+            });
+
+        });
+    });
+    </script>
+</head>
+<body>
+    <div class="bloco">
+        <div>
+            <h1>Relatórios</h1>
+        </div>
+
+        <div id="trabalhadas"></div>
+        <div id="saldo"></div>
+        <a href="" class="grp-button menor">Atualizar</a>
+        <a href="/ios_home" class="grp-button menor">Voltar</a>
+        </div>
+</body>
+</html>
