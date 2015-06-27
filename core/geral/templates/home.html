@@ -29,7 +29,7 @@
         <div>
             <h1>Alterar usuário</h1>
             {% for u in usuarios %}
-            <a href="{% url 'home' %}?usuario={{u.id}}" class="grp-button">{{u.first_name}}</a>
+            <a href="{% url 'home' %}?usuario={{u.id}}" class="grp-button {%if u.id == usuario.id %}grp-delete-link{% endif %}">{{u.first_name}}</a>
             {% endfor %}
         </div>
         {% endif %}
