@@ -38,11 +38,11 @@
                 {% else %}
                 <tr {% if e.fim_de_semana %}style="background: #CACACA"{% elif e.folga %}style="background: #D6FFFF"{% endif %}>
                     <td>{{e.dia|date:"D"}}</td>
-                    <td>{{e.dia}}</td>
-                    <td {% if not e.entrada and not e.fim_de_semana and not e.folga %}style="background: #FFCECE"{% endif %}>{{e.entrada|default_if_none:""}}</td>
-                    <td>{{e.saida_almoco|default_if_none:""}}</td>
-                    <td>{{e.volta_almoco|default_if_none:""}}</td>
-                    <td {% if not e.saida and not e.fim_de_semana and not e.folga %}style="background: #FFCECE"{% endif %}>{{e.saida|default_if_none:""}}</td>
+                    <td>{{e.dia|date:"d/m/Y"}}</td>
+                    <td {% if not e.entrada and not e.fim_de_semana and not e.folga %}style="background: #FFCECE"{% endif %}>{{e.entrada|date:"H:i"}}</td>
+                    <td>{{e.saida_almoco|date:"H:i"}}</td>
+                    <td>{{e.volta_almoco|date:"H:i"}}</td>
+                    <td {% if not e.saida and not e.fim_de_semana and not e.folga %}style="background: #FFCECE"{% endif %}>{{e.saida|date:"H:i"}}</td>
                     <td>{{e.total}}</td>
                     <td>{{e.extra}}</td>
                     <td>{{e.deficit}}</td>

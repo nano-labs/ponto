@@ -25,9 +25,17 @@
 <!-- CONTENT -->
 {% block content %}
     <div class="g-d-c">
+        {% if usuario.is_superuser %}
+        <div>
+            <h1>Alterar usuário</h1>
+            {% for u in usuarios %}
+            <a href="{% url 'home' %}?usuario={{u.id}}" class="grp-button">{{u.first_name}}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
         <div>
         <h1>{{agora|date:"l - H:i - d \d\e F \d\e Y"}}</h1>
-        <h2>Bom dia, {{usuario.first_name}}</h2>
+        <h2>Olá, {{usuario.first_name}}</h2>
         </div>
         <br>
         <div>

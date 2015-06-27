@@ -58,6 +58,12 @@ class Entrada(BaseModel):
                                                   self.saida_almoco)
         elif self.entrada and self.saida:
             return self.saida - self.entrada
+        elif self.dia == datetime.today():
+            if self.entrada and self.saida_almoco and self.volta_almoco:
+                return (self.saida - datetime.now()) - (self.volta_almoco -
+                                                      self.saida_almoco)
+            elif self.entrada:
+                return datetime.now() - self.entrada
         else:
             return u""
 

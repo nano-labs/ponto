@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from math import sqrt
 
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, render_to_response
 from django.template import RequestContext
 from django.http import Http404
@@ -16,11 +17,16 @@ from ponto.models import Entrada
 @staff_member_required
 def home(request):
     usuario = request.user
+    if usuario.is_superuser:
+        user_id = request.GET.get('usuario')
+        if user_id:
+            usuario = User.objects.get(id=user_id)
     agora = datetime.now()
     entrada = Entrada.objects.get_or_none(usuario=usuario, dia=datetime.today())
     context = {"entrada": entrada,
                "agora": agora,
-               "usuario": usuario}
+               "usuario": usuario,
+               "usuarios": User.objects.all()}
     if Entrada.objects.filter(usuario=usuario).count() >= 2:
         trinta_dias = datetime.today() - timedelta(31)
         id_inicio = Entrada.objects.filter(usuario=usuario, dia__gte=trinta_dias).last().id
@@ -164,10 +170,16 @@ def ios_relatorio(request):
     minimo = minimo if minimo >= 0 else 0
     saldo = 0
     for e in Entrada.objects.filter(usuario=usuario, dia__lt=inicio, folga=False, abonado=False).order_by('dia'):
-        saldo += (e.total_horas - 8.0)
+        if e.dia.isoweekday() in [6, 7]:  # FIM DE SEMANA
+            saldo += e.total_horas
+        else:
+            saldo += (e.total_horas - 8.0)
     saldo_graf = []
     for e in entradas:
-        saldo += (e.total_horas - 8.0)
+        if e.dia.isoweekday() in [6, 7]:  # FIM DE SEMANA
+            saldo += e.total_horas
+        else:
+            saldo += (e.total_horas - 8.0)
         saldo_graf.append({"dia": e.dia, "saldo": saldo})
 
 
