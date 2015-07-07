@@ -3,7 +3,7 @@
 <!-- LOADING -->
 {% load i18n l10n admin_urls admin_static %}
 <div style="width: 2000px;">
-    <table style="float: left">
+    <table style="">
         <thead>
             <tr><th></th><th>Dia</th><th>Entrada</th><th>Saída para almoço</th><th>Retorno do almoço</th><th>Saída</th><th>Total</th><th>Extra</th><th>Defícit</th><th>Comentário</th></tr>
         </thead>
@@ -59,5 +59,7 @@
         </thead>
             <tr><td></td><td></td><td></td><td>{{entrada_media.2}}</td><td>{{saida_media.2}}</td><td>{{total_alvo}}</td><td>{{total_trabalhado}}</td><td>{{total_extra}}</td><td>{{total_deficit}}</td><td style="font-size: 1.1em">{{saldo_string}}</td></tr>
     </table>
-    <div id="container" style="float: left; width: 450px; height: {% widthratio entradas|length 1 37 %}px; background: #0000FF; margin-left: 10px;"></div>
+    <div id="container" style="width: 1000px; height: 300px; margin-top: 15px; border: 1px dashed #CCCCCC"></div>
+    <div id="trabalhadas" style="width: 1000px; height: 200px; margin-top: 15px; border: 1px dashed #CCCCCC"></div>
+    <div id="saldo" style="width: 1000px; height: 200px; margin-top: 15px; border: 1px dashed #CCCCCC"></div>
 </div>

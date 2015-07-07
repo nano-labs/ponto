@@ -104,6 +104,24 @@ def cria_relatorio(id_inicio, id_fim, usuario):
         entrada_minutos.append(entrada.minutos_hoje['entrada']['minutos'])
         saida_minutos.append(entrada.minutos_hoje['saida']['minutos'])
 
+    _inicio = datetime.today() - timedelta(days=30)
+    _entradas = Entrada.objects.filter(usuario=usuario, dia__gte=_inicio, folga=False, abonado=False).order_by('dia')
+    _minimo = min([i.total_horas for i in _entradas]) - 1
+    _minimo = _minimo if _minimo >= 0 else 0
+    _saldo = 0
+    for e in Entrada.objects.filter(usuario=usuario, dia__lt=_inicio, folga=False, abonado=False).order_by('dia'):
+        if e.dia.isoweekday() in [6, 7]:  # FIM DE SEMANA
+            _saldo += e.total_horas
+        else:
+            _saldo += (e.total_horas - 8.0)
+    saldo_graf = []
+    for e in _entradas:
+        if e.dia.isoweekday() in [6, 7]:  # FIM DE SEMANA
+            _saldo += e.total_horas
+        else:
+            _saldo += (e.total_horas - 8.0)
+        saldo_graf.append({"dia": e.dia, "saldo": _saldo})
+
     saldo = total_extra - total_deficit
     saldo_string = Entrada.format_time(saldo)  # "%02d:%02d:00" % (int(saldo.total_seconds()/60/60), int((abs(saldo.total_seconds()) - abs(int(saldo.total_seconds()/60/60)*60*60))/60) )
     context = {'entradas': entradas,
@@ -114,7 +132,10 @@ def cria_relatorio(id_inicio, id_fim, usuario):
                'total_trabalhado': Entrada.format_time(total_trabalhado),
                'total_alvo': Entrada.format_time(total_alvo),
                'saida_media': calcula_media(saida_minutos),
-               'entrada_media': calcula_media(entrada_minutos)}
+               'entrada_media': calcula_media(entrada_minutos),
+               'n_entradas': _entradas, 
+               'n_saldos': saldo_graf,
+               'n_minimo': _minimo}
     return context
 
 
