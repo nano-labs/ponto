@@ -135,7 +135,7 @@ def cria_relatorio(id_inicio, id_fim, usuario):
                'entrada_media': calcula_media(entrada_minutos),
                'n_entradas': _entradas, 
                'n_saldos': saldo_graf,
-               'n_minimo': _minimo}
+               'n_minimo': ("%.2f" % _minimo).replace(",", ".")}
     return context
 
 
@@ -204,6 +204,6 @@ def ios_relatorio(request):
         saldo_graf.append({"dia": e.dia, "saldo": saldo})
 
 
-    context = {"entradas": entradas, "saldos": saldo_graf, "minimo": minimo}
+    context = {"entradas": entradas, "saldos": saldo_graf, "minimo": ("%.2f" % minimo).replace(",", ".")}
     return render(request, "ios_relatorio.html", context)
 
