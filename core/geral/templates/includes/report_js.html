@@ -172,7 +172,7 @@ function zeroPad(num, places) {
                 },
                 series: [{
                     name: null,
-                    data: [{% for e in n_entradas %}{{e.total_horas}}{% if not forloop.last %},{% endif %}{% endfor %}]
+                    data: [{% for e in n_entradas %}{{e.total_horas_str}}{% if not forloop.last %},{% endif %}{% endfor %}]
                 }]
             });
             var chart = new Highcharts.Chart({

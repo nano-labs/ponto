@@ -201,7 +201,7 @@ def ios_relatorio(request):
             saldo += e.total_horas
         else:
             saldo += (e.total_horas - 8.0)
-        saldo_graf.append({"dia": e.dia, "saldo": saldo})
+        saldo_graf.append({"dia": e.dia, "saldo": ("%.2f" % saldo).replace(",", ".")})
 
 
     context = {"entradas": entradas, "saldos": saldo_graf, "minimo": ("%.2f" % minimo).replace(",", ".")}

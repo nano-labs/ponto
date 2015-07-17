@@ -75,6 +75,10 @@ class Entrada(BaseModel):
             return 0
         return t.total_seconds() / 60.0 / 60.0
 
+    @property
+    def total_horas_str(self):
+        """Caucula o tempo total em minutos de trabalho deste dia."""
+        return ("%.2f" % self.total_horas).replace(",", ".")
 
     @property
     def ate_agora(self):
