@@ -114,6 +114,7 @@ def cria_relatorio(id_inicio, id_fim, usuario):
             _saldo += e.total_horas
         else:
             _saldo += (e.total_horas - 8.0)
+    saldo = total_extra - total_deficit + timedelta(hours=_saldo)
     saldo_graf = []
     for e in _entradas:
         if e.dia.isoweekday() in [6, 7]:  # FIM DE SEMANA
@@ -122,7 +123,6 @@ def cria_relatorio(id_inicio, id_fim, usuario):
             _saldo += (e.total_horas - 8.0)
         saldo_graf.append({"dia": e.dia, "saldo": ("%.2f" % _saldo).replace(",", ".")})
 
-    saldo = total_extra - total_deficit
     saldo_string = Entrada.format_time(saldo)  # "%02d:%02d:00" % (int(saldo.total_seconds()/60/60), int((abs(saldo.total_seconds()) - abs(int(saldo.total_seconds()/60/60)*60*60))/60) )
     context = {'entradas': entradas,
                'total_extra': total_extra,

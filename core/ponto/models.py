@@ -54,18 +54,34 @@ class Entrada(BaseModel):
         """Caucula o tempo total de trabalho deste dia."""
         if all([self.entrada, self.saida_almoco, self.volta_almoco,
                 self.saida]):
-            return (self.saida - self.entrada) - (self.volta_almoco -
-                                                  self.saida_almoco)
-        elif self.entrada and self.saida:
-            return self.saida - self.entrada
-        elif self.dia == datetime.today():
-            if self.entrada and self.saida_almoco and self.volta_almoco:
-                return (self.saida - datetime.now()) - (self.volta_almoco -
-                                                      self.saida_almoco)
-            elif self.entrada:
-                return datetime.now() - self.entrada
+            tempo = (self.saida - self.entrada) - (self.volta_almoco -
+                                                   self.saida_almoco)
+        elif all([self.entrada, self.saida_almoco, self.volta_almoco]):
+            tempo = datetime.now() - self.entrada
+            almoco = self.volta_almoco - self.saida_almoco
+            tempo = tempo - almoco
+        elif all([self.entrada, self.saida_almoco]):
+            tempo = self.saida_almoco - self.entrada
+        elif self.entrada:
+            tempo = datetime.now() - self.entrada
         else:
             return u""
+
+
+        # if all([self.entrada, self.saida_almoco, self.volta_almoco,
+        #         self.saida]):
+        #     return (self.saida - self.entrada) - (self.volta_almoco -
+        #                                           self.saida_almoco)
+        # elif self.entrada and self.saida:
+        #     return self.saida - self.entrada
+        # elif self.dia == datetime.today():
+        #     if self.entrada and self.saida_almoco and self.volta_almoco:
+        #         return (self.saida - datetime.now()) - (self.volta_almoco -
+        #                                               self.saida_almoco)
+        #     elif self.entrada:
+        #         return datetime.now() - self.entrada
+        # else:
+        #     return u""
 
     @property
     def total_horas(self):
