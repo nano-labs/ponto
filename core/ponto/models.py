@@ -52,7 +52,7 @@ class Entrada(BaseModel):
     @property
     def total(self):
         """Caucula o tempo total de trabalho deste dia."""
-        if self.dia == self.today():
+        if self.dia == datetime.today():
             if all([self.entrada, self.saida_almoco, self.volta_almoco,
                     self.saida]):
                 return (self.saida - self.entrada) - (self.volta_almoco -
