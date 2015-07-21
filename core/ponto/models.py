@@ -54,16 +54,16 @@ class Entrada(BaseModel):
         """Caucula o tempo total de trabalho deste dia."""
         if all([self.entrada, self.saida_almoco, self.volta_almoco,
                 self.saida]):
-            tempo = (self.saida - self.entrada) - (self.volta_almoco -
+            return (self.saida - self.entrada) - (self.volta_almoco -
                                                    self.saida_almoco)
         elif all([self.entrada, self.saida_almoco, self.volta_almoco]):
             tempo = datetime.now() - self.entrada
             almoco = self.volta_almoco - self.saida_almoco
-            tempo = tempo - almoco
+            return tempo - almoco
         elif all([self.entrada, self.saida_almoco]):
-            tempo = self.saida_almoco - self.entrada
+            return self.saida_almoco - self.entrada
         elif self.entrada:
-            tempo = datetime.now() - self.entrada
+            return datetime.now() - self.entrada
         else:
             return u""
 
