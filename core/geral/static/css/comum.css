@@ -1,0 +1,40 @@
+table {
+	width: 1002px;
+}
+tr.weekend {
+	background: #FAFAFA;
+	color: #CCCCCC;
+}
+tr.abonado {
+	background: #D6FFE0;
+	color: #CCCCCC;
+}
+tr.folga {
+	background: #AAAAAA;
+	color: #FAFAFA;
+}
+tr.falta {
+	background: #FFCECE;
+	color: #000000;
+}
+tr.consumo {
+	background: #D6E0FF;
+	color: #000000;
+}
+strong.zero {
+	margin-right: 9px;
+}
+strong.mais {
+	color: #00C200;
+}
+strong.menos {
+	color: #FF0000;
+	font-size: 1.1em;
+	margin-right: 2px;
+}
+th {
+	text-align: center;
+}
+.resumo td {
+	text-align: right;
+}

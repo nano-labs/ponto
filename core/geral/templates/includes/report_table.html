@@ -3,17 +3,16 @@
 <!-- LOADING -->
 {% load i18n l10n admin_urls admin_static %}
 <div style="width: 2000px;">
-    <table style="">
+    <table>
         <thead>
-            <tr><th></th><th>Dia</th><th>Entrada</th><th>Saída para almoço</th><th>Retorno do almoço</th><th>Saída</th><th>Total</th><th>Extra</th><th>Defícit</th><th>Comentário</th></tr>
+            <tr><th colspan="2">Dia</th><th>Entrada</th><th>Saída para<br> almoço</th><th>Retorno <br>do almoço</th><th>Saída</th><th>Total</th><th>Saldo</th><th>Comentário</th></tr>
         </thead>
         <tbody>
             {% for e in entradas %}
-                {% if e.inexistente %}
+                {% if False %}
                 <tr style="background: #FAFAFA; color: #CCCCCC !important">
                     <td>{{e.dia|date:"D"}}</td>
                     <td>{{e.dia}}</td>
-                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -32,32 +31,31 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
                     <td>{{e.comentario_curto}}</td>
                 </tr>
                 {% else %}
-                <tr {% if e.fim_de_semana %}style="background: #CACACA"{% elif e.folga %}style="background: #D6FFFF"{% endif %}>
+                <tr class="{{e.tipo}}{% if e.is_weekend %} weekend{% endif %}">
                     <td>{{e.dia|date:"D"}}</td>
                     <td>{{e.dia|date:"d/m/Y"}}</td>
-                    <td {% if not e.entrada and not e.fim_de_semana and not e.folga %}style="background: #FFCECE"{% endif %}>{{e.entrada|date:"H:i"}}</td>
+                    <td {% if not e.entrada and e.util %}style="background: #FFCECE"{% endif %}>{{e.entrada|date:"H:i"}}</td>
                     <td>{{e.saida_almoco|date:"H:i"}}</td>
                     <td>{{e.volta_almoco|date:"H:i"}}</td>
-                    <td {% if not e.saida and not e.fim_de_semana and not e.folga %}style="background: #FFCECE"{% endif %}>{{e.saida|date:"H:i"}}</td>
-                    <td>{{e.total}}</td>
-                    <td>{{e.extra}}</td>
-                    <td>{{e.deficit}}</td>
-                    <td>{{e.comentario_curto}}</td>
+                    <td {% if not e.saida and e.util %}style="background: #FFCECE"{% endif %}>{{e.saida|date:"H:i"}}</td>
+                    <td>{{e.total_string}}</td>
+                    <td>{{e.saldo_html}}</td>
+                    <td>{% if not e.tipo == 'util' %}<strong>{{e.get_tipo_display}}</strong> {% endif %}{{e.comentario_curto}}</td>
                 </tr>
                 {% endif %}
             {% endfor %}
         </tbody>
-<!--         </table>
+    </table>
     <br/>
-    <table>
--->            <thead>
-            <tr><th></th><th></th><th></th><th>Entrada média</th><th>Saída média</th><th>Total desejado</th><th>Total trabalhado</th><th>Extras total</th><th>Déficit total</th><th style="font-size: 1.1em">Saldo final</th></tr>
+    <table class="resumo">
+        <thead>
+            <tr><th colspan="3">Médias</th><th colspan="3">Tempo de trabalho</th><th colspan="2">Saldo</th></tr>
+            <tr><th>Hora de entrada</th><th>Hora de saída</th><th>Tempo de almoço</th><th>Desejado</th><th>Efetivado</th><th>%</th><th>No período</th><th>Total</th></tr>
         </thead>
-            <tr><td></td><td></td><td></td><td>{{entrada_media.2}}</td><td>{{saida_media.2}}</td><td>{{total_alvo}}</td><td>{{total_trabalhado}}</td><td>{{total_extra}}</td><td>{{total_deficit}}</td><td style="font-size: 1.1em">{{saldo_string}}</td></tr>
+            <tr><td>{{medias.entrada}}</td><td>{{medias.saida}}</td><td>{{medias.almoco}}</td><td>{{desejado}}</td><td>{{trabalhado}}</td><td>{{eficiencia}}</td><td>{{saldo_periodo}}</td><td>{{saldo_total}}</td></tr>
     </table>
     <div id="container" style="width: 1000px; height: 300px; margin-top: 15px; border: 1px dashed #CCCCCC"></div>
     <div id="trabalhadas" style="width: 1000px; height: 200px; margin-top: 15px; border: 1px dashed #CCCCCC"></div>

@@ -7,6 +7,8 @@
 {% block javascripts %}
     <script type="text/javascript" src="{% static "grappelli/jquery/jquery-1.9.1.min.js" %}"></script>
     <script type="text/javascript" src="{% static "js/highcharts/highcharts.js" %}"></script>
+    <link type="text/css" rel="stylesheet" href="{% static "css/comum.css" %}" />
+
     <style>
     a.grp-button {
         height: 45px;
@@ -39,17 +41,17 @@
         </div>
         <br>
         <div>
-            <a href="{% url 'registrar' 'entrada' %}" class="grp-button {% if not entrada.entrada %}grp-delete-link{% endif %}">{% if entrada.entrada %}Entrada registrada<br/>{{entrada.entrada|date:"H:i"}}{% else %}Registrar entrada<br/>{{agora|date:"H:i"}}{% endif %}</a>
-            <a href="{% url 'registrar' 'saida_almoco' %}" class="grp-button {% if not entrada.saida_almoco %}grp-delete-link{% endif %}">{% if entrada.saida_almoco%}Saída para almoço registrada<br/>{{entrada.saida_almoco|date:"H:i"}}{% else %}Registrar saída para almoço<br/>{{agora|date:"H:i"}}{% endif %}</a>
-            <a href="{% url 'registrar' 'volta_almoco' %}" class="grp-button {% if not entrada.volta_almoco %}grp-delete-link{% endif %}">{% if entrada.volta_almoco%}Volta do almoço registrada<br/>{{entrada.volta_almoco|date:"H:i"}}{% else %}Registrar volta do almoço<br/>{{agora|date:"H:i"}}{% endif %}</a>
-            <a href="{% url 'registrar' 'saida' %}" class="grp-button {% if not entrada.saida %}grp-delete-link{% endif %}">{% if entrada.saida%}Saída registrada<br/>{{entrada.saida|date:"H:i"}}{% else %}Registrar saída<br/>{{agora|date:"H:i"}}{% endif %}</a>
+            <a href="{% if not entrada.entrada %}{% url 'registrar' 'entrada' %}{% endif %}" class="grp-button {% if not entrada.entrada %}grp-delete-link{% endif %}">{% if entrada.entrada %}Entrada registrada<br/>{{entrada.entrada|date:"H:i"}}{% else %}Registrar entrada<br/>{{agora|date:"H:i"}}{% endif %}</a>
+            <a href="{% if not entrada.saida_almoco %}{% url 'registrar' 'saida_almoco' %}{% endif %}" class="grp-button {% if not entrada.saida_almoco %}grp-delete-link{% endif %}">{% if entrada.saida_almoco%}Saída para almoço registrada<br/>{{entrada.saida_almoco|date:"H:i"}}{% else %}Registrar saída para almoço<br/>{{agora|date:"H:i"}}{% endif %}</a>
+            <a href="{% if not entrada.volta_almoco %}{% url 'registrar' 'volta_almoco' %}{% endif %}" class="grp-button {% if not entrada.volta_almoco %}grp-delete-link{% endif %}">{% if entrada.volta_almoco%}Volta do almoço registrada<br/>{{entrada.volta_almoco|date:"H:i"}}{% else %}Registrar volta do almoço<br/>{{agora|date:"H:i"}}{% endif %}</a>
+            <a href="{% if not entrada.saida %}{% url 'registrar' 'saida' %}{% endif %}" class="grp-button {% if not entrada.saida %}grp-delete-link{% endif %}">{% if entrada.saida%}Saída registrada<br/>{{entrada.saida|date:"H:i"}}{% else %}Registrar saída<br/>{{agora|date:"H:i"}}{% endif %}</a>
         <div>
         <div>
         {% if entrada %}<br/><h3>Hoje você já trabalhou: {{entrada.ate_agora}}</h3>{% endif %}
         </div>
         <br>
         <div>
-        <h2>Relatório</h2>
+        <h2>Relatório de {{inicio.dia|date:"d/m/Y"}} à {{fim.dia|date:"d/m/Y"}}</h2>
         {% include 'includes/report_table.html' %}
         </div>
     </div>

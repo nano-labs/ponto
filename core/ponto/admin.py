@@ -51,22 +51,21 @@ class PontoAdmin(admin.ModelAdmin):
         return super(PontoAdmin, self).save_model(request, obj, form, change)
 
 
-class EntradaTodosAdmin(PontoAdmin):
+class EntradaTodosAdmin(admin.ModelAdmin):
 
     list_display = ['usuario', 'dia', 'entrada', 'saida_almoco', 'volta_almoco',
-                    'saida', 'total', 'extra', 'deficit', 'folga',
-                    'abonado', 'comentario_curto', 'has_foto']
+                    'saida', 'tipo', 'has_foto']
     exclude = []
 
-    def save_model(self, request, obj, form, change):
-        return super(PontoAdmin, self).save_model(request, obj, form, change)
+    # def save_model(self, request, obj, form, change):
+    #     return super(PontoAdmin, self).save_model(request, obj, form, change)
 
-    def get_queryset(self, request):
-        u"""Retorna o queryset padrão usado no admin."""
-        return super(admin.ModelAdmin, self).get_queryset(request)
+    # def get_queryset(self, request):
+    #     u"""Retorna o queryset padrão usado no admin."""
+    #     return super(admin.ModelAdmin, self).get_queryset(request)
 
-    def has_delete_permission(self, *args, **kwargs):
-        return True
+    # def has_delete_permission(self, *args, **kwargs):
+    #     return True
 
-admin.site.register(Entrada, PontoAdmin)
+admin.site.register(Entrada)#, PontoAdmin)
 admin.site.register(EntradaTodos, EntradaTodosAdmin)

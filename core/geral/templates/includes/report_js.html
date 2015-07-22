@@ -17,6 +17,9 @@ function zeroPad(num, places) {
                 type: 'line',
                 inverted: false,
             },
+            credits: {
+                enabled: false
+            },
             title: {
                 text: 'Permanência na empresa'
             },
@@ -83,14 +86,14 @@ function zeroPad(num, places) {
 
             series: [{
                 name: 'Entrada',
-                data: [{% for entrada in entradas %}{% if entrada.util %}{{entrada.minutos_hoje.entrada.minutos}}{% if not forloop.last %}, {% endif %}{% endif %}{% endfor %}],
+                data: [{% for entrada in entradas %}{% if entrada.util %}{{entrada.minutos.0|default_if_none:"null"}}{% if not forloop.last %}, {% endif %}{% endif %}{% endfor %}],
                 // tooltip: {
                 //     pointFormat: "Value: {point.y} mm",
                 // },
             }, {
                 name: 'Saída',
                 // data: [{% for entrada in cl.result_list %}{{entrada.used}}{% if not forloop.last %}, {% endif %}{% endfor %}]
-                data: [{% for entrada in entradas %}{% if entrada.util %}{{entrada.minutos_hoje.saida.minutos}}{% if not forloop.last %}, {% endif %}{% endif %}{% endfor %}],
+                data: [{% for entrada in entradas %}{% if entrada.util %}{{entrada.minutos.1|default_if_none:"null"}}{% if not forloop.last %}, {% endif %}{% endif %}{% endfor %}],
                 // tooltip: {
                 //     pointFormat: "Value: {point.y:,.0f} mm",
                 // },
@@ -125,13 +128,13 @@ function zeroPad(num, places) {
                         //     fontSize:'8px'
                         // },
                     },
-                    categories: [{% for e in n_entradas %}'{{e.dia|date:"d/m"}}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                    categories: [{% for e in entradas %}{% if e.util %}'{{e.dia|date:"d/m"}}'{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}],
                 },
                 yAxis: {
                     title: {
                         text: null
                     },
-                    min: {{n_minimo}},
+                    min: 0.0,
                     labels: {
                         formatter: function () {
                             return this.value;
@@ -172,7 +175,7 @@ function zeroPad(num, places) {
                 },
                 series: [{
                     name: null,
-                    data: [{% for e in n_entradas %}{{e.total_horas_str}}{% if not forloop.last %},{% endif %}{% endfor %}]
+                    data: [{% for e in entradas %}{% if e.util %}{{e.total_horas_string}}{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}]
                 }]
             });
             var chart = new Highcharts.Chart({
@@ -201,7 +204,7 @@ function zeroPad(num, places) {
                         //     fontSize:'8px'
                         // }
                     },
-                    categories: [{% for e in n_saldos %}'{{e.dia|date:"d/m"}}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                    categories: [{% for e in entradas %}{% if e.util %}'{{e.dia|date:"d/m"}}'{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}],
                 },
                 yAxis: {
                     title: {
@@ -249,7 +252,7 @@ function zeroPad(num, places) {
                 },
                 series: [{
                     name: null,
-                    data: [{% for e in n_saldos %}{{e.saldo}}{% if not forloop.last %},{% endif %}{% endfor %}]
+                    data: [{% for s in saldo_graf %}{{s}}{% if not forloop.last %},{% endif %}{% endfor %}]
                 }]
             });
 
