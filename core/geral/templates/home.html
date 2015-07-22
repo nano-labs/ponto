@@ -47,7 +47,7 @@
             <a href="{% if not entrada.saida %}{% url 'registrar' 'saida' %}{% endif %}" class="grp-button {% if not entrada.saida %}grp-delete-link{% endif %}">{% if entrada.saida%}Saída registrada<br/>{{entrada.saida|date:"H:i"}}{% else %}Registrar saída<br/>{{agora|date:"H:i"}}{% endif %}</a>
         <div>
         <div>
-        {% if entrada %}<br/><h3>Hoje você já trabalhou: {{entrada.ate_agora}}</h3>{% endif %}
+        {% if entrada %}<br/><h3>Hoje você já trabalhou: {{entrada.total_string}}</h3>{% endif %}
         </div>
         <br>
         <div>
