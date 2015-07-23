@@ -52,7 +52,12 @@
         <div>
         <br>
         <div>
-        <h2><form id="form_range" action="" method="GET">Relatório de <select class="form_select" name="inicio">{% for label, value in lista_dias %}<option value="{{value}}" {% if label == inicio.dia|date:"d/m/Y" %}selected="selected"{% endif %}>{{label}}</option>{% endfor %}</select> à <select class="form_select" name="fim">{% for label, value in lista_dias %}<option value="{{value}}" {% if label == fim.dia|date:"d/m/Y" %}selected="selected"{% endif %}>{{label}}</option>{% endfor %}</select></form></h2>
+        <h2>
+            <form id="form_range" action="" method="GET">
+                Relatório de <select class="form_select" name="inicio">{% for label, value in lista_dias %}<option value="{{value}}" {% if label == inicio.dia|date:"d/m/Y" %}selected="selected"{% endif %}>{{label}}</option>{% endfor %}</select> à <select class="form_select" name="fim">{% for label, value in lista_dias %}<option value="{{value}}" {% if label == fim.dia|date:"d/m/Y" %}selected="selected"{% endif %}>{{label}}</option>{% endfor %}</select>
+                <input type="hidden" name="usuario" value="{{usuario.id}}">
+            </form>
+        </h2>
         <br>
         {% include 'includes/report_table.html' %}
         </div>
