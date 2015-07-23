@@ -14,6 +14,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.safestring import mark_safe
 from ponto.models import Entrada
 
+
 @staff_member_required
 def home(request):
     usuario = request.user
@@ -28,12 +29,32 @@ def home(request):
                "usuario": usuario,
                "usuarios": User.objects.all()}
     if Entrada.objects.filter(usuario=usuario).count() >= 2:
-        trinta_dias = datetime.today() - timedelta(31)
-        id_inicio = Entrada.objects.filter(usuario=usuario, dia__gte=trinta_dias).last().id
-        id_fim = Entrada.objects.filter(usuario=usuario).first().id
-        rel = cria_relatorio(id_inicio, id_fim, usuario)
-        context.update(rel)
+        primeiro_dia = Entrada.objects.filter(usuario=usuario).last().dia
+        primeiro_dia = datetime(*primeiro_dia.timetuple()[:6])
+        dias = (datetime.today() - primeiro_dia).total_seconds() / 86400
+        dias = [[(primeiro_dia + timedelta(i)).strftime("%d/%m/%Y"),
+                 (primeiro_dia + timedelta(i)).strftime("%Y-%m-%d")]
+                for i in xrange(int(dias) + 1)]
+        context['lista_dias'] = dias
+        data_inicio = request.GET.get('inicio',
+                                      (datetime.today() - timedelta(30)).strftime("%Y-%m-%d"))
+        data_fim = request.GET.get('fim',
+                                   datetime.today().strftime("%Y-%m-%d"))
+        data_inicio = datetime.strptime(data_inicio, "%Y-%m-%d")
+        data_fim = datetime.strptime(data_fim, "%Y-%m-%d")
+        if data_inicio > data_fim:
+            data_inicio = data_fim - timedelta(1)
+        inicio = Entrada.objects.filter(usuario=usuario,
+                                        dia__gte=data_inicio).last()
+        fim = Entrada.objects.filter(usuario=usuario,
+                                     dia__lte=data_fim).first()
+        if inicio and fim:
+            id_inicio = inicio.id
+            id_fim = fim.id
+            rel = cria_relatorio(id_inicio, id_fim, usuario)
+            context.update(rel)
     return render(request, "home.html", context)
+
 
 @staff_member_required
 def registrar(request, momento):
@@ -60,6 +81,7 @@ def registrar(request, momento):
     if request.GET.get('device') == 'ios':
         return redirect('ios_home')
     return redirect('home')
+
 
 def cria_relatorio(id_inicio, id_fim, usuario):
     u"""Action que gera o relatório."""
@@ -124,74 +146,12 @@ def cria_relatorio(id_inicio, id_fim, usuario):
                "saldo_total": Entrada.delta_to_html(saldo_inicial + saldo_periodo)}
     return context
 
-    # total_extra = timedelta(0)
-    # total_deficit = timedelta(0)
-    # total_trabalhado = timedelta(0)
-    # total_alvo = timedelta(0)
-    # entrada_minutos = []
-    # saida_minutos = []
-
-    # entradas = []
-    # inicio = Entrada.objects.get(id=id_inicio)
-    # fim = Entrada.objects.get(id=id_fim)
-    # total_dias = (fim.dia - inicio.dia).days
-    # for i in range(total_dias + 1):
-    #     dia = inicio.dia + timedelta(days=i)
-    #     if dia.isoweekday() in [6, 7]:  # FIM DE SEMANA
-    #         entrada = Entrada(dia=dia, entrada=None, usuario=usuario)
-    #         entrada.fim_de_semana = True
-    #     else:
-    #         entrada = Entrada.objects.get_or_none(dia=dia, usuario=usuario)
-    #         if not entrada:
-    #             entrada = Entrada(dia=dia, entrada=None, usuario=usuario)
-    #             entrada.inexistente = True
-    #     total_extra = entrada.extra + total_extra if entrada.extra else total_extra
-    #     total_deficit = entrada.deficit + total_deficit if entrada.deficit else total_deficit
-    #     total_trabalhado = total_trabalhado + entrada.total if entrada.total else total_trabalhado
-    #     total_alvo = total_alvo + entrada.total_alvo if entrada.util else total_alvo
-    #     entradas.append(entrada)
-    #     entrada_minutos.append(entrada.minutos_hoje['entrada']['minutos'])
-    #     saida_minutos.append(entrada.minutos_hoje['saida']['minutos'])
-
-    # _inicio = datetime.today() - timedelta(days=30)
-    # _entradas = Entrada.objects.filter(usuario=usuario, dia__gte=_inicio, folga=False, abonado=False).order_by('dia')
-    # _minimo = min([i.total_horas for i in _entradas]) - 1
-    # _minimo = _minimo if _minimo >= 0 else 0
-    # _saldo = 0
-    # for e in Entrada.objects.filter(usuario=usuario, dia__lt=_inicio, folga=False, abonado=False).order_by('dia'):
-    #     if e.dia.isoweekday() in [6, 7]:  # FIM DE SEMANA
-    #         _saldo += e.total_horas
-    #     else:
-    #         _saldo += (e.total_horas - 8.0)
-    # saldo = total_extra - total_deficit + timedelta(hours=_saldo)
-    # saldo_graf = []
-    # for e in _entradas:
-    #     if e.dia.isoweekday() in [6, 7]:  # FIM DE SEMANA
-    #         _saldo += e.total_horas
-    #     else:
-    #         _saldo += (e.total_horas - 8.0)
-    #     saldo_graf.append({"dia": e.dia, "saldo": ("%.2f" % _saldo).replace(",", ".")})
-
-    # saldo_string = Entrada.format_time(saldo)  # "%02d:%02d:00" % (int(saldo.total_seconds()/60/60), int((abs(saldo.total_seconds()) - abs(int(saldo.total_seconds()/60/60)*60*60))/60) )
-    # context = {'entradas': entradas,
-    #            'total_extra': total_extra,
-    #            'total_deficit': total_deficit,
-    #            'saldo': saldo,
-    #            'saldo_string': saldo_string,
-    #            'total_trabalhado': Entrada.format_time(total_trabalhado),
-    #            'total_alvo': Entrada.format_time(total_alvo),
-    #            'saida_media': calcula_media(saida_minutos),
-    #            'entrada_media': calcula_media(entrada_minutos),
-    #            'n_entradas': _entradas, 
-    #            'n_saldos': saldo_graf,
-    #            'n_minimo': ("%.2f" % _minimo).replace(",", ".")}
-    # return context
-
 
 def relatorio(request, id_inicio, id_fim):
     u"""Action que gera o relatório."""
     context = cria_relatorio(id_inicio, id_fim, request.user)
     return render(request, "relatorio.html", context)
+
 
 def ios_login(request):
     if request.user.is_authenticated():
@@ -211,12 +171,35 @@ def ios_login(request):
         context["falha_autenticacao"] = True
     return render_to_response('ios_login.html', context_instance=context)
 
+
 def ios_logout(request):
     logout(request)
     return redirect('ios_login')
 
+
 @staff_member_required
 def ios_home(request):
+    usuario = request.user
+    agora = datetime.now()
+    entrada = Entrada.objects.get_or_none(usuario=usuario, dia=datetime.today())
+    context = {"entrada": entrada,
+               "agora": agora,
+               "usuario": usuario}
+    if Entrada.objects.filter(usuario=usuario).count() >= 2:
+        id_inicio = Entrada.objects.filter(usuario=usuario).last().id
+        id_fim = Entrada.objects.filter(usuario=usuario).first().id
+        rel = cria_relatorio(id_inicio, id_fim, usuario)
+        context.update(rel)
+        trinta_dias = datetime.today() - timedelta(31)
+        id_inicio = Entrada.objects.filter(usuario=usuario, dia__gte=trinta_dias).last().id
+        id_fim = Entrada.objects.filter(usuario=usuario).first().id
+        rel = cria_relatorio(id_inicio, id_fim, usuario)
+        context['30_dias'] = rel
+    return render(request, "ios_home.html", context)
+
+
+@staff_member_required
+def ios_relatorio(request):
     usuario = request.user
     agora = datetime.now()
     entrada = Entrada.objects.get_or_none(usuario=usuario, dia=datetime.today())
@@ -229,30 +212,4 @@ def ios_home(request):
         id_fim = Entrada.objects.filter(usuario=usuario).first().id
         rel = cria_relatorio(id_inicio, id_fim, usuario)
         context.update(rel)
-    return render(request, "ios_home.html", context)
-
-@staff_member_required
-def ios_relatorio(request):
-    usuario = request.user
-    inicio = datetime.today() - timedelta(days=30)
-    entradas = Entrada.objects.filter(usuario=usuario, dia__gte=inicio, folga=False, abonado=False).order_by('dia')
-    minimo = min([i.total_horas for i in entradas]) - 1
-    minimo = minimo if minimo >= 0 else 0
-    saldo = 0
-    for e in Entrada.objects.filter(usuario=usuario, dia__lt=inicio, folga=False, abonado=False).order_by('dia'):
-        if e.dia.isoweekday() in [6, 7]:  # FIM DE SEMANA
-            saldo += e.total_horas
-        else:
-            saldo += (e.total_horas - 8.0)
-    saldo_graf = []
-    for e in entradas:
-        if e.dia.isoweekday() in [6, 7]:  # FIM DE SEMANA
-            saldo += e.total_horas
-        else:
-            saldo += (e.total_horas - 8.0)
-        saldo_graf.append({"dia": e.dia, "saldo": ("%.2f" % saldo).replace(",", ".")})
-
-
-    context = {"entradas": entradas, "saldos": saldo_graf, "minimo": ("%.2f" % minimo).replace(",", ".")}
     return render(request, "ios_relatorio.html", context)
-

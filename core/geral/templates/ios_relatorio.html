@@ -85,13 +85,13 @@
                             fontSize:'8px'
                         },
                     },
-                    categories: [{% for e in entradas %}'{{e.dia|date:"d"}}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                    categories: [{% for e in entradas %}{% if e.util %}'{{e.dia|date:"d"}}'{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}],
                 },
                 yAxis: {
                     title: {
                         text: null
                     },
-                    min: {{minimo}},
+                    min: 0.0,
                     labels: {
                         formatter: function () {
                             return this.value;
@@ -129,7 +129,7 @@
                 },
                 series: [{
                     name: null,
-                    data: [{% for e in entradas %}{{e.total_horas}}{% if not forloop.last %},{% endif %}{% endfor %}]
+                    data: [{% for e in entradas %}{% if e.util %}{{e.total_horas_string}}{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}]
                 }]
             });
             var chart = new Highcharts.Chart({
@@ -157,7 +157,7 @@
                             fontSize:'8px'
                         }
                     },
-                    categories: [{% for e in saldos %}'{{e.dia|date:"d"}}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                    categories: [{% for e in entradas %}{% if e.util %}'{{e.dia|date:"d"}}'{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}],
                 },
                 yAxis: {
                     title: {
@@ -203,7 +203,7 @@
                 },
                 series: [{
                     name: null,
-                    data: [{% for e in saldos %}{{e.saldo}}{% if not forloop.last %},{% endif %}{% endfor %}]
+                    data: [{% for s in saldo_graf %}{{s}}{% if not forloop.last %},{% endif %}{% endfor %}]
                 }]
             });
 

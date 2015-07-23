@@ -40,14 +40,20 @@
     table td {
         line-height: 5px !important;
     }
+    h1 {
+        line-height: 0px;
+    }
     </style>
 </head>
 <body>
     <div class="bloco">
         <div>
-            <h1>{{agora|date:"H:i - l"}}<br/>
+<!--             <h1>{{agora|date:"H:i - l"}}<br/>
                 {{agora|date:"d \d\e F \d\e Y"}}</h1>
-            <h2>Olá, {{usuario.first_name}}</h2>
+ -->            <h1>Olá, {{usuario.first_name}}</h1>
+        </div>
+        <div>
+            {% if entrada %}<br/><h3>Hoje você já trabalhou: {{fim.total_string}}</h3>{% endif %}
         </div>
         <br>
         <div>
@@ -60,17 +66,22 @@
             <a href="{% url 'registrar' 'saida' %}?device=ios" class="grp-button grp-button-custom {% if not entrada.saida %}grp-delete-link{% endif %}">{% if entrada.saida%}Saída registrada<br/>{{entrada.saida|date:"H:i"}}{% else %}Registrar saída<br/>{{agora|date:"H:i"}}{% endif %}</a>
         </div>
         <div>
-            {% if entrada %}<br/><h3>Hoje você já trabalhou: {{entrada.ate_agora}}</h3>{% endif %}
-        </div>
-        <br>
-        <div>
             <table>
                 <thead>
-                    <tr><th colspan="4">Resumo dos último 30 dias</th></tr>
-                    <tr><th>Trabalhado</th><th>Extras</th><th>Déficit</th><th style="font-size: 1.1em">Saldo final</th></tr>
+                    <tr><th colspan="4">Resumo desde {{inicio.dia|date:"d/m/Y"}}</th></tr>
+                    <tr><th>Trabalhado</th><th>Desejado</th><th>%</th><th>Saldo final</th></tr>
                 </thead>
                 <tbody>
-                    <tr><td>{{total_trabalhado}}</td><td>{{total_extra}}</td><td>{{total_deficit}}</td><td style="font-size: 1.1em">{{saldo_string}}</td></tr>
+                    <tr><td>{{trabalhado}}</td><td>{{desejado}}</td><td>{{eficiencia}}</td><td>{{saldo_total}}</td></tr>
+                </tbody>
+            </table>
+            <table>
+                <thead>
+                    <tr><th colspan="4">Últimos trinta dias</th></tr>
+                    <tr><th>Trabalhado</th><th>Desejado</th><th>%</th><th>Saldo final</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>{{30_dias.trabalhado}}</td><td>{{30_dias.desejado}}</td><td>{{30_dias.eficiencia}}</td><td>{{30_dias.saldo_periodo}}</td></tr>
                 </tbody>
             </table>
         </div>

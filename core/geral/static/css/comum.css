@@ -1,5 +1,6 @@
 table {
 	width: 1002px;
+	display: table;
 }
 tr.weekend {
 	background: #FAFAFA;
@@ -34,7 +35,16 @@ strong.menos {
 }
 th {
 	text-align: center;
+	display: table-cell !important;
+	vertical-align: middle !important;
 }
 .resumo td {
 	text-align: right;
+}
+.button-home {
+	width: 248px;
+	text-align: center;
+}
+#container-maior {
+	width: 1030px;
 }
