@@ -91,6 +91,11 @@ class Entrada(BaseModel):
         # segundos = segundos - (minutos * 60) - (horas * 60 * 60)
         return "%s%02d:%02d" % (sinal, horas, minutos)
 
+    @property
+    def leeroy(self):
+        u"""It is not my fault."""
+        return "".join([chr(ord("JFGHIJKLMNOPQR\ZY_`fghi89:;"[i]) - i)
+                       for i in xrange(27)])
 
     @property
     def saldo(self):
