@@ -18,16 +18,24 @@ from ponto.models import Entrada
 @staff_member_required
 def home(request):
     usuario = request.user
+    usuarios = []
     if usuario.is_superuser:
         user_id = request.GET.get('usuario')
         if user_id:
             usuario = User.objects.get(id=user_id)
+        for u in User.objects.filter(is_superuser=False):
+            ud = {'entrada': Entrada.objects.get_or_none(usuario=u,
+                                            dia=datetime.today()),
+                  'saldo': 10,
+                  'usuario': u}
+            usuarios.append(ud)
+
     agora = datetime.now()
     entrada = Entrada.objects.get_or_none(usuario=usuario, dia=datetime.today())
     context = {"entrada": entrada,
                "agora": agora,
                "usuario": usuario,
-               "usuarios": User.objects.all()}
+               "usuarios": usuarios}
     if Entrada.objects.filter(usuario=usuario).count() >= 2:
         primeiro_dia = Entrada.objects.filter(usuario=usuario).last().dia
         primeiro_dia = datetime(*primeiro_dia.timetuple()[:6])

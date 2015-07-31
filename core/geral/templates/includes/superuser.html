@@ -1,0 +1,14 @@
+{% if request.user.is_superuser %}
+<h1>Usuários:</h1>
+<table>
+    <thead>
+        <tr><th colspan="2">Usuário</th><th colspan="7">Hoje</th><th colspan="2">Geral</th></tr>
+        <tr><th>Nome</th><th>Presente</th><th>Entrada</th><th>Saída para<br>almoço</th><th>Retorno<br>do almoço</th><th>Saída</th><th>Total</th><th>Saldo</th><th>Total</th><th>Saldo</th></tr>
+    </thead>
+    <tbody>
+        {% for u in usuarios %}
+        <tr><td><a href="{% url 'home' %}?usuario={{u.usuario.id}}">{{u.usuario.first_name}}</a></td><td>SIM</td><td>{{u.entrada.entrada|date:"H:i"}}</td><td>{{u.entrada.saida_almoco|date:"H:i"}}</td><td>{{u.entrada.volta_almoco|date:"H:i"}}</td><td>{{u.entrada.saida|date:"H:i"}}</td><td>00:00</td><td>00:00</td><td>00:00</td><td>{{u.saldo}}</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
