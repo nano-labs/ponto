@@ -7,7 +7,7 @@
     </thead>
     <tbody>
         {% for u in usuarios %}
-        <tr><td><a href="{% url 'home' %}?usuario={{u.usuario.id}}">{{u.usuario.first_name}}</a></td><td>SIM</td><td>{{u.entrada.entrada|date:"H:i"}}</td><td>{{u.entrada.saida_almoco|date:"H:i"}}</td><td>{{u.entrada.volta_almoco|date:"H:i"}}</td><td>{{u.entrada.saida|date:"H:i"}}</td><td>00:00</td><td>00:00</td><td>00:00</td><td>{{u.saldo}}</td></tr>
+        <tr><td><a href="{% url 'home' %}?usuario={{u.usuario.id}}">{{u.usuario.first_name}}</a></td><td>{{u.entrada|yesno:"Sim,Não"}}</td><td>{{u.entrada.entrada|date:"H:i"}}</td><td>{{u.entrada.saida_almoco|date:"H:i"}}</td><td>{{u.entrada.volta_almoco|date:"H:i"}}</td><td>{{u.entrada.saida|date:"H:i"}}</td><td>{{u.entrada.total_string}}</td><td>{{u.entrada.saldo_html}}</td><td>00:00</td><td>{{u.saldo}}</td></tr>
         {% endfor %}
     </tbody>
 </table>

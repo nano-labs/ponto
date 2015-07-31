@@ -24,9 +24,10 @@ def home(request):
         if user_id:
             usuario = User.objects.get(id=user_id)
         for u in User.objects.filter(is_superuser=False):
-            ud = {'entrada': Entrada.objects.get_or_none(usuario=u,
-                                            dia=datetime.today()),
-                  'saldo': 10,
+            ue = Entrada.objects.get_or_none(usuario=u,
+                                            dia=datetime.today())
+            ud = {'entrada': ue,
+                  'saldo': Entrada.delta_to_html(Entrada.objects.filter(usuario=u).first().saldo_ate_hoje()),
                   'usuario': u}
             usuarios.append(ud)
 
