@@ -67,7 +67,7 @@ def home(request):
 
 @staff_member_required
 def registrar(request, momento):
-    l = open("/var/log/http/log_de_registro.log", "a")
+    l = open("/var/log/httpd/log_de_registro.log", "a")
     agent = request.environ.get("HTTP_USER_AGENT")
     ip = request.environ.get("REMOTE_ADDR")
     user = "%s - %s" % (request.user.id, request.user.username)
