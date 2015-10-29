@@ -71,8 +71,7 @@ def registrar(request, momento):
     agent = request.environ.get("HTTP_USER_AGENT")
     ip = request.environ.get("REMOTE_ADDR")
     user = "%s - %s" % (request.user.id, request.user.username)
-    print "%s - %s - %s - %s - %s" % (datetime.now(), momento, user, ip, agent)
-    l.write("%s - %s - %s - %s - %s" % (datetime.now(), momento, user, ip, agent))
+    l.write("%s - %s - %s - %s - %s\n" % (datetime.now(), ip, user, momento, agent))
     l.close()
     usuario = request.user
     entrada = Entrada.objects.get_or_none(usuario=usuario, dia=datetime.today())
